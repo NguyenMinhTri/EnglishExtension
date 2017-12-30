@@ -1,6 +1,5 @@
-var apiKey = "trnsl.1.1.20171031T094741Z.b8618875ef69a6bb.d4baa2b7efd346de3d5d51c9d805ab3cc18aada9";
-var langDirection = "en-zh"
 
+var Chrome = chrome;
 // Add bubble to the top of the page.
 var bubble = document.createElement('div');
 bubble.setAttribute('class', 'bubble');
@@ -26,11 +25,12 @@ function translateText(mouseX, mouseY, selection) {
       return response.json();
     })
     .then(function(data) {
-        if (/^[a-z\d\-_\s]+$/i.test(data.messages[1].text)) {
+        if (/^[a-z\d\-_\s]+$/i.test(data.messages[0].text)) {
           renderBubble(mouseX, mouseY, "Translation not found.");
         } else {
+
           new Audio(data.messages[3].attachment.payload.url).play();
-          renderBubble(mouseX, mouseY, data.messages[1].text);
+          renderBubble(mouseX, mouseY, data.messages[0].text+"<br/>"+data.messages[2].text+"<br/>"+data.messages[1].text);
         }
     })
     .catch(function(err) {
