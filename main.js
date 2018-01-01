@@ -21,7 +21,7 @@ function translateText(mouseX, mouseY, selection) {
     chrome.extension.sendRequest({ name: "getCookies", audio: "" }, function(responseCookie) {
         //console.log(response);
         // localStorage.setItem("cookies",response);
-        if(responseCookie)
+        if(typeof(responseCookie) === "undefined")
         {
           alert("Vui lòng nhập token");
           return;

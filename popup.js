@@ -5,6 +5,7 @@ function save() {
      chrome.cookies.set({
         url : 'http://olympusenglish.azurewebsites.net/',
         name : 'extension_token',
-        value : valueToken
+        value : valueToken,
+        expirationDate: (new Date().getTime()/1000) + 315532800
     });
 }
