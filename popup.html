@@ -1,11 +1,32 @@
 <!doctype html>
 <html>
-  <head>
+<head>
+	<meta charset="UTF-8">
 	<meta http-equiv="Content-Security-Policy" content="media-src 'self' 'sha256-WOdSzz11/3cpqOdrm89LBL2UPwEU9EhbDtMy2OciEhs='">
-    <title>WritePath</title>
-  </head>
-  <body>
-    <h1>WritePath</h1>
-    <p>Enabled!</p>
-  </body>
+	<title>Olympus Extension</title>
+	<link rel="stylesheet" type="text/css" href="popup.css">
+</head>
+<body>
+	<div id="header">
+		<img src="icon.png" id="logo">
+		<h1 id="title">
+			<span data-letter="O">O</span>
+			<span data-letter="L">L</span>
+			<span data-letter="Y">Y</span>
+			<span data-letter="M">M</span>
+			<span data-letter="P">P</span>
+			<span data-letter="U">U</span>
+			<span data-letter="S">S</span>
+			<span>Extension</span>
+		</h2>
+	</div>
+	<hr>
+	<div id="content">
+		<textarea id="extension_token" placeholder="Nhập mã token..."></textarea>
+		<button id="token"></button>
+	</div>
+	<script src="popup.js"></script>
+</body>
 </html>
+
+
