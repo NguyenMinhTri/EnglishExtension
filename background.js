@@ -5,12 +5,21 @@
 					url: 'http://olympusenglish.azurewebsites.net/',
 					name: 'extension_token'
 				}, function(cookie) {
-					sendResponse(cookie.value);
-				});               
+					if(cookie === null || cookie == null)
+					{
+						sendResponse("undefined");
+					}
+					else
+					{
+						sendResponse(cookie.value);
+					}
+				});       
+
             } else if (request.name == "runAudio") {
                 new Audio(request.audio).play();
                 console.log(sender);
                 console.log(request);
                 sendResponse(request.audio);
             }
+
         });

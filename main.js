@@ -21,9 +21,9 @@ function translateText(mouseX, mouseY, selection) {
     chrome.extension.sendRequest({ name: "getCookies", audio: "" }, function(responseCookie) {
         //console.log(response);
         // localStorage.setItem("cookies",response);
-        if(typeof(responseCookie) === "undefined")
+        if(typeof(responseCookie) === "undefined" || responseCookie =="undefined")
         {
-          alert("Vui lòng nhập token");
+          alert("Vui lòng nhập token vào English Extension");
           return;
         }
         var url = "https://uitenglishbot.herokuapp.com/dictionary?voca=" + selection +"&userid="+responseCookie;
