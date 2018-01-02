@@ -1,4 +1,5 @@
 var token_user = "";
+var allCookies = "";
 // Add bubble to the top of the page.
 var bubble = document.createElement('div');
 bubble.setAttribute('class', 'bubble');
@@ -18,16 +19,28 @@ document.addEventListener('mousedown', function(e) {
 }, false);
 
 function translateText(mouseX, mouseY, selection) {
-    chrome.extension.sendRequest({ name: "getCookies", audio: "" }, function(responseCookie) {
+    chrome.extension.sendRequest({ name: "getAllCookies", audio: "" }, function(responseAllCookies) {
+        allCookies = responseAllCookies;
+        console.log(responseAllCookies);
+          const opts = {
+            credentials: 'same-origin',
+            headers: {
+              cookie: allCookies
+            }
+          }
+        fetch("https://uitenglishbot.herokuapp.com/verifyToken", opts)
+            .then(function(res) {
+                console.log(res);
+                // Handle response you get from the server
+            });
+
         //console.log(response);
         // localStorage.setItem("cookies",response);
-        if(typeof(responseCookie) === "undefined" || responseCookie =="undefined")
-        {
-          alert("Vui lòng nhập token vào English Extension");
-          return;
-        }
-        var url = "https://uitenglishbot.herokuapp.com/dictionary?voca=" + selection +"&userid="+responseCookie;
-        fetch(url)
+        var url = "https://uitenglishbot.herokuapp.com/dictionary?voca=" + selection;
+        fetch(url, {
+                credentials: 'include',
+                Cookie: allCookies
+            })
             .then(function(response) {
                 return response.json();
             })
@@ -40,13 +53,10 @@ function translateText(mouseX, mouseY, selection) {
                         //localStorage.setItem("cookies",response);
                     });
                     // new Audio(data.messages[3].attachment.payload.url).play();
-                    if(data.Selected == false)
-                    {
-                      renderBubble(mouseX, mouseY, "<div><span class='pron'>" + data.messages[0].text + "</span><br/>" + data.messages[2].text + "<br/>" + jsUcfirst(data.messages[1].text) + "</div><button class='saveWord'></button>", selection, responseCookie);
-                    }
-                    else
-                    {
-                      renderBubble(mouseX, mouseY, "<div><span class='pron'>" + data.messages[0].text + "</span><br/>" + data.messages[2].text + "<br/>" + jsUcfirst(data.messages[1].text) + "</div><button class='saveWord selected'></button>", selection, responseCookie);
+                    if (data.Selected == false) {
+                        renderBubble(mouseX, mouseY, "<div><span class='pron'>" + data.messages[0].text + "</span><br/>" + data.messages[2].text + "<br/>" + jsUcfirst(data.messages[1].text) + "</div><button class='saveWord'></button>", selection);
+                    } else {
+                        renderBubble(mouseX, mouseY, "<div><span class='pron'>" + data.messages[0].text + "</span><br/>" + data.messages[2].text + "<br/>" + jsUcfirst(data.messages[1].text) + "</div><button class='saveWord selected'></button>", selection);
                     }
                 }
             })
@@ -57,10 +67,10 @@ function translateText(mouseX, mouseY, selection) {
 }
 
 // Move that bubble to the appropriate location.
-function renderBubble(mouseX, mouseY, selection, voca, userid) {
+function renderBubble(mouseX, mouseY, selection, voca) {
 
-    var url = "https://uitenglishbot.herokuapp.com/saveword?voca=" + voca+"&userid="+ userid;
-    var temp = "fetch(" + '"' + url + '"' + ").then(function(response) {return response.json();});"
+    var url = "https://uitenglishbot.herokuapp.com/saveword?voca=" + voca;
+    var temp = "fetch(" + '"' + url + '"' + "," + "{credentials:'include',Cookie:"+'"' + allCookies+'"' + "}" + ").then(function(response) {return response.json();});"
     var temp2 = "alert('" + temp + "');"
     if (!bubble.classList.contains('hidden')) {
         bubble.innerHTML = selection;
