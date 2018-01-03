@@ -23,14 +23,17 @@ function translateText(mouseX, mouseY, selection) {
         allCookies = responseAllCookies;
         console.log(responseAllCookies);
           const opts = {
-            credentials: 'same-origin',
+            credentials: 'include',
             headers: {
               cookie: allCookies
             }
           }
         fetch("https://uitenglishbot.herokuapp.com/verifyToken", opts)
-            .then(function(res) {
-                console.log(res);
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log(data);
                 // Handle response you get from the server
             });
 
