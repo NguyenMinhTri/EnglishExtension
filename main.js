@@ -95,7 +95,3 @@ function jsUcfirst(string) {
         return "";
     }
 }
-
-function save() {
-    alert("ok");
-}
