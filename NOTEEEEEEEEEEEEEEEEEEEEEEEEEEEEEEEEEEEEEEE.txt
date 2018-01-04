@@ -3,3 +3,4 @@ LỖI CÒN:
 1. Bật/Tắt loa
 2. Đăng xuất rồi mà vẫn hiện THANK YOU
 3. Tự động chuyển màn hình KẾT NỐI/THANK YOU sau khi đăng nhập (hiện giờ là nó hiện màn hình KẾT NỐI mấy giây rồi mới qua THANK YOU)
+4. Xóa từ đã học ở WEB :v vô OldWord.cshtml

@@ -21,8 +21,12 @@ document.addEventListener('mousedown', function(e) {
     var target = e.target.closest("div.bubble");
     if (target==null){
         bubble.style.visibility="hidden";
-        document.getElementsByClassName('saveWord')[0].style.display = "none";
-        document.getElementsByClassName('voice')[0].style.display = "none";
+        if (document.getElementsByClassName('saveWord').length != 0){
+            document.getElementsByClassName('saveWord')[0].style.display = "none";
+        } 
+        if (document.getElementsByClassName('voice').length != 0){
+            document.getElementsByClassName('voice')[0].style.display = "none";
+        } 
     }
 }, false);
 
@@ -79,7 +83,7 @@ function translateText(mouseX, mouseY, selection) {
                 //}
             })
         .catch(function(err) {
-            console.error('Có lỗi xảy ra!', err);
+            console.log('Có lỗi xảy ra!', err);
         });
     });
 }
