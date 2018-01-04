@@ -74,9 +74,9 @@ function translateText(mouseX, mouseY, selection) {
                 }
                 else{
                     if (data.Selected == false) {
-                        renderBubble(mouseX, mouseY, "<div><div class='pron'><span>" + data.messages[0].text + "</span><button class='voice'></button></div>" + data.messages[2].text + "<br/>" + jsUcfirst(data.messages[1].text) + "</div><button class='saveWord'></button>", selection, data.messages[3].attachment.payload.url);
+                        renderBubble(mouseX, mouseY, "<div><div class='pron'><span>" + data.messages[0].text + "</span><button class='voice'></button></div>" + data.messages[2].text + "<br/>" + removeLastChar(jsUcfirst(data.messages[1].text)) + "</div><button class='saveWord'></button>", selection, data.messages[3].attachment.payload.url);
                     } else {
-                        renderBubble(mouseX, mouseY, "<div><div class='pron'><span>" + data.messages[0].text + "</span><button class='voice'></button></div>" + data.messages[2].text + "<br/>" + jsUcfirst(data.messages[1].text) + "</div><button class='saveWord selected'></button>", selection, data.messages[3].attachment.payload.url);
+                        renderBubble(mouseX, mouseY, "<div><div class='pron'><span>" + data.messages[0].text + "</span><button class='voice'></button></div>" + data.messages[2].text + "<br/>" + removeLastChar(jsUcfirst(data.messages[1].text)) + "</div><button class='saveWord selected'></button>", selection, data.messages[3].attachment.payload.url);
                     }
                 }
 
@@ -114,7 +114,15 @@ function renderBubble(mouseX, mouseY, selection, voca, audio) {
 
 function jsUcfirst(string) {
     if (string != null) {
-        return string.charAt(0).toUpperCase() + string.slice(1).substring(0, string.length - 3);
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    } else {
+        return "";
+    }
+}
+
+function removeLastChar(string) {
+    if (string != null) {
+        return string.substring(0, string.length - 2);
     } else {
         return "";
     }
