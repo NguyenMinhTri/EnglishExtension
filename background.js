@@ -1,12 +1,12 @@
         chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
             var result = "";
-            if (request.name == "getCookies") {
+            if (request.name == "soundSetting") {
                 chrome.cookies.get({
-                    url: 'http://olympusenglish.azurewebsites.net/',
-                    name: 'extension_token'
+                    url: 'https://uitenglishbot.herokuapp.com/',
+                    name: 'sound_setting'
                 }, function(cookie) {
                     if (cookie === null || cookie == null) {
-                        sendResponse("undefined");
+                        sendResponse("ON");
                     } else {
                         sendResponse(cookie.value);
                     }

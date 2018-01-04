@@ -1,45 +1,72 @@
-document.addEventListener("DOMContentLoaded", function(event) {
-	chrome.cookies.getAll({ url: "http://olympusenglish.azurewebsites.net" }, function(cookies) {
-		var tempCookieValue = '';
-		for (var i = 0; i < cookies.length; i++) {
-			tempCookieValue += cookies[i].name + '=' + cookies[i].value + '; ';
-			chrome.cookies.set({
-				url: 'https://uitenglishbot.herokuapp.com/',
-				name: cookies[i].name,
-				value: cookies[i].value,
-				expirationDate: (new Date().getTime() / 1000) + 315532800
-			});
-		}
+// Nếu mute thì set value : 'OFF'
+//chrome.cookies.set({
+//    url: 'https://uitenglishbot.herokuapp.com/',
+//   name: 'sound_setting',
+//    value: 'ON',
+//    expirationDate: (new Date().getTime() / 1000) + 315532800
+//});
 
-        // if (BẬT ÂM){
-        //     document.getElementsByClassName("sound")[0].classList.remove("sound-mute")
-        // }
-        // else{
-        //     document.getElementsByClassName("sound")[0].classList.add("sound-mute")
-        // }
+document.addEventListener("DOMContentLoaded", function(event) {
+    chrome.cookies.getAll({ url: "http://olympusenglish.azurewebsites.net" }, function(cookies) {
+        var tempCookieValue = '';
+        chrome.cookies.set({
+            url: 'https://uitenglishbot.herokuapp.com/',
+            name: '.AspNet.ApplicationCookie',
+            value: ''
+        });
+        for (var i = 0; i < cookies.length; i++) {
+            tempCookieValue += cookies[i].name + '=' + cookies[i].value + '; ';
+            chrome.cookies.set({
+                url: 'https://uitenglishbot.herokuapp.com/',
+                name: cookies[i].name,
+                value: cookies[i].value,
+                expirationDate: cookies[i].expiration
+            });
+        }
+        //Get cookie value that is checked sound
+        chrome.cookies.get({
+            url: 'https://uitenglishbot.herokuapp.com/',
+            name: 'sound_setting'
+        }, function(cookie) {
+            if (cookie === null || cookie == null) {
+                chrome.cookies.set({
+                    url: 'https://uitenglishbot.herokuapp.com/',
+                    name: 'sound_setting',
+                    value: 'ON',
+                    expirationDate: (new Date().getTime() / 1000) + 315532800
+                });
+            } else {
+                if(cookie.value === 'ON') {
+                    document.getElementsByClassName("sound")[0].classList.remove("sound-mute");
+                }
+                else {
+                    document.getElementsByClassName("sound")[0].classList.add("sound-mute");
+                }
+            }
+        });
 
         if (tempCookieValue == '') {
-        	document.getElementById("header").classList.add("small");
-        	document.getElementById("content").style.display = "flex";
-        	document.getElementById("content_1").style.display = "none";
+            document.getElementById("header").classList.add("small");
+            document.getElementById("content").style.display = "flex";
+            document.getElementById("content_1").style.display = "none";
         } else {
-        	fetch("https://uitenglishbot.herokuapp.com/verifyToken", {
-        		credentials: 'include'
-        	})
-        	.then(function(response) {
-        		return response.json();
-        	})
-        	.then(function(data) {
-        		document.getElementById("header").classList.remove("small");
-        		document.getElementById("content").style.display = "none";
-        		document.getElementById("content_1").style.display = "block";
-        		document.getElementById("play").style.opacity = "1";
-        		document.getElementById("play").textContent = "Hi " + data.text + ",";
-        		if (tempCookieValue.Name === "undefined") {
-        			document.getElementById("content").style.display = "flex";
-        			document.getElementById("content_1").style.display = "none";
-        		}
-        	});
+            fetch("https://uitenglishbot.herokuapp.com/verifyToken", {
+                credentials: 'include'
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                document.getElementById("header").classList.remove("small");
+                document.getElementById("content").style.display = "none";
+                document.getElementById("content_1").style.display = "block";
+                document.getElementById("play").style.opacity = "1";
+                document.getElementById("play").textContent = "Hi " + data.text ;
+                if (tempCookieValue.Name === "undefined") {
+                    document.getElementById("content").style.display = "flex";
+                    document.getElementById("content_1").style.display = "none";
+                }
+            });
         }
     });
 });
@@ -47,10 +74,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
 document.getElementsByClassName("sound")[0].addEventListener("click",function(){
 	this.classList.toggle("sound-mute");
 	if(this.classList.contains("sound-mute")){
-		alert("TẮT ÂM");
+        chrome.cookies.set({
+            url: 'https://uitenglishbot.herokuapp.com/',
+            name: 'sound_setting',
+            value: 'OFF',
+            expirationDate: (new Date().getTime() / 1000) + 315532800
+        });
 	}
 	else{
-		alert("MỞ ÂM");
+        chrome.cookies.set({
+            url: 'https://uitenglishbot.herokuapp.com/',
+            name: 'sound_setting',
+            value: 'ON',
+            expirationDate: (new Date().getTime() / 1000) + 315532800
+        });
 	}
 })
 

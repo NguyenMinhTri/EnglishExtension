@@ -8,7 +8,7 @@ document.body.appendChild(bubble);
 // Lets listen to mouseup DOM events.
 document.addEventListener('mouseup', function(e) {
     var target = e.target.closest(".bubble button");
-    if (target==null){
+    if (target == null) {
         var selection = window.getSelection().toString();
         if (selection.length > 0) {
             translateText(e.clientX - 20, e.clientY + 30, selection);
@@ -19,14 +19,14 @@ document.addEventListener('mouseup', function(e) {
 // Close the bubble when we click on the screen.
 document.addEventListener('mousedown', function(e) {
     var target = e.target.closest("div.bubble");
-    if (target==null){
-        bubble.style.visibility="hidden";
-        if (document.getElementsByClassName('saveWord').length != 0){
+    if (target == null) {
+        bubble.style.visibility = "hidden";
+        if (document.getElementsByClassName('saveWord').length != 0) {
             document.getElementsByClassName('saveWord')[0].style.display = "none";
-        } 
-        if (document.getElementsByClassName('voice').length != 0){
+        }
+        if (document.getElementsByClassName('voice').length != 0) {
             document.getElementsByClassName('voice')[0].style.display = "none";
-        } 
+        }
     }
 }, false);
 
@@ -40,39 +40,29 @@ function translateText(mouseX, mouseY, selection) {
                 cookie: allCookies
             }
         }
-        fetch("https://uitenglishbot.herokuapp.com/verifyToken", opts)
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            console.log(data);
-                // Handle response you get from the server
-            });
 
         // localStorage.setItem("cookies",response);
         var url = "https://uitenglishbot.herokuapp.com/dictionary?voca=" + selection;
         fetch(url, {
-            credentials: 'include',
-            Cookie: allCookies
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-               // if (/^[a-z\d\-_\s]+$/i.test(data.messages[1].text)) {
-               //     console.log(data.messages[1].text);
-               //     renderBubble(mouseX, mouseY, "Không tìm thấy từ!");
-               // } 
-               // else {
-                chrome.extension.sendRequest({ name: "runAudio", audio: data.messages[3].attachment.payload.url }, function(response) {
-                    console.log(response);
-                        //localStorage.setItem("cookies",response);
-                    });
+                credentials: 'include',
+                Cookie: allCookies
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                chrome.extension.sendRequest({ name: "soundSetting", audio: "" }, function(soudSetting) {
+                    if (soudSetting === 'ON') {
+                        chrome.extension.sendRequest({ name: "runAudio", audio: data.messages[3].attachment.payload.url }, function(response) {
+                            console.log(response);
+                        });
+                    }
+                });
 
-                if (data.messages[0].text == null){
+
+                if (data.messages[0].text == null) {
                     renderBubble(mouseX, mouseY, "<div>" + jsUcfirst(data.messages[2].text) + "</div>", selection);
-                }
-                else{
+                } else {
                     if (data.Selected == false) {
                         renderBubble(mouseX, mouseY, "<div><div class='pron'><span>" + data.messages[0].text + "</span><button class='voice'></button></div>" + data.messages[2].text + "<br/>" + removeLastChar(jsUcfirst(data.messages[1].text)) + "</div><button class='saveWord'></button>", selection, data.messages[3].attachment.payload.url);
                     } else {
@@ -82,9 +72,9 @@ function translateText(mouseX, mouseY, selection) {
 
                 //}
             })
-        .catch(function(err) {
-            console.log('Có lỗi xảy ra!', err);
-        });
+            .catch(function(err) {
+                console.log('Có lỗi xảy ra!', err);
+            });
     });
 }
 
@@ -92,7 +82,8 @@ function translateText(mouseX, mouseY, selection) {
 function renderBubble(mouseX, mouseY, selection, voca, audio) {
     var url = "https://uitenglishbot.herokuapp.com/saveword?voca=" + voca;
     var saveword = "fetch(" + '"' + url + '"' + "," + "{credentials:'include',Cookie:" + '"' + allCookies + '"' + "}" + ").then(function(response) {return response.json();});"
-    var voice = "new Audio('"+audio+"').play()";
+    //var voice = "new Audio('"+audio+"').play()";
+    var voice = "chrome.extension.sendRequest({ name: '" + "runAudio" + "', audio: '" + audio + "'}, function(response) {});";
     if (!bubble.classList.contains('hidden')) {
         bubble.innerHTML = selection;
         bubble.style.top = mouseY + 'px';
@@ -102,11 +93,11 @@ function renderBubble(mouseX, mouseY, selection, voca, audio) {
             "document.getElementsByClassName('saveWord')[0].addEventListener('click',function(event){" +
             saveword +
             "if (document.getElementsByClassName('saveWord')[0].classList.contains('selected')){this.classList.remove('selected')}else{this.classList.add('selected')}" +
-            "});" + 
+            "});" +
             "document.getElementsByClassName('voice')[0].addEventListener('click',function(event){" +
             voice +
             "});"
-            );
+        );
     } else {
         bubble.classList.remove('hidden');
     }
