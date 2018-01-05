@@ -9,6 +9,7 @@
 document.addEventListener("DOMContentLoaded", function(event) {
 	chrome.cookies.getAll({ url: "http://olympusenglish.azurewebsites.net" }, function(cookies) {
 		var tempCookieValue = '';
+        var checkLoading = false;
 		chrome.cookies.set({
 			url: 'https://uitenglishbot.herokuapp.com/',
 			name: '.AspNet.ApplicationCookie',
@@ -20,8 +21,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				url: 'https://uitenglishbot.herokuapp.com/',
 				name: cookies[i].name,
 				value: cookies[i].value,
-				expirationDate: cookies[i].expiration
+				expirationDate: cookies[i].expirationDate
 			});
+            if(cookies[i].name == '.AspNet.ApplicationCookie')
+            {
+                checkLoading = true;
+            }
 		}
         //Get cookie value that is checked sound
         chrome.cookies.get({
@@ -44,22 +49,50 @@ document.addEventListener("DOMContentLoaded", function(event) {
         		}
         	}
         });
+        //Get cookie value that is checked sound
+        chrome.cookies.get({
+            url: 'https://uitenglishbot.herokuapp.com/',
+            name: 'sound_setting'
+        }, function(cookie) {
+            if (cookie === null || cookie == null) {
+                chrome.cookies.set({
+                    url: 'https://uitenglishbot.herokuapp.com/',
+                    name: 'sound_setting',
+                    value: 'ON',
+                    expirationDate: (new Date().getTime() / 1000) + 315532800
+                });
+            } else {
+                if(cookie.value === 'ON') {
+                    document.getElementsByClassName("sound")[0].classList.remove("sound-mute");
+                }
+                else {
+                    document.getElementsByClassName("sound")[0].classList.add("sound-mute");
+                }
+            }
+        });
 
-        if (tempCookieValue == '') {
+        if (checkLoading == false) {
         	document.getElementById("header").classList.add("small");
         	document.getElementById("content").style.display = "flex";
         	document.getElementById("content_1").style.display = "none";
         	document.getElementById("progress_contain").style.display = "none";
         } else {
+            try{
         	fetch("https://uitenglishbot.herokuapp.com/verifyToken", {
         		credentials: 'include'
         	})
         	.then(function(response) {
-        		return response.json();
+                try
+                {
+        		  return response.json();
+                }
+                catch(err){
+                    return null;
+                }
         	})
         	.then(function(data) {
         		window.setInterval(function(){
-        			if (data.text === "undefined") {
+        			if (data.text === null || data.text== null) {
         				document.getElementById("content").style.display = "flex";
         				document.getElementById("content_1").style.display = "none";
         			}
@@ -76,6 +109,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
         			document.getElementById("progress_contain").style.display = "none";
         		}, 3000);
         	});
+        } catch(err)
+        {
+                                    document.getElementById("content").style.display = "flex";
+                        document.getElementById("content_1").style.display = "none";
+        }
         }
     });
 });
