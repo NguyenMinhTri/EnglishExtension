@@ -32,25 +32,7 @@ document.addEventListener('mousedown', function(e) {
 
 function translateText(mouseX, mouseY, selection) {
     chrome.extension.sendRequest({ name: "getAllCookies", audio: "" }, function(responseAllCookies) {
-        allCookies = responseAllCookies;
-        console.log(responseAllCookies);
-        const opts = {
-            credentials: 'include',
-            headers: {
-                cookie: allCookies
-            }
-        }
-
-        // localStorage.setItem("cookies",response);
-        var url = "https://uitenglishbot.herokuapp.com/dictionary?voca=" + selection;
-        fetch(url, {
-                credentials: 'include',
-                Cookie: allCookies
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
+        chrome.extension.sendRequest({ name: "getDictToExtension", audio: selection }, function(data) {
                 chrome.extension.sendRequest({ name: "soundSetting", audio: "" }, function(soudSetting) {
                     if (soudSetting === 'ON') {
                         chrome.extension.sendRequest({ name: "runAudio", audio: data.messages[3].attachment.payload.url }, function(response) {
@@ -70,11 +52,7 @@ function translateText(mouseX, mouseY, selection) {
                     }
                 }
 
-                //}
-            })
-            .catch(function(err) {
-                console.log('Có lỗi xảy ra!', err);
-            });
+        });
     });
 }
 
@@ -113,7 +91,7 @@ function jsUcfirst(string) {
 
 function removeLastChar(string) {
     if (string != null) {
-        return string.substring(0, string.length - 2);
+        return string.substring(0, string.length);
     } else {
         return "";
     }

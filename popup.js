@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         				document.getElementById("play").textContent = "Hi " + data.text ;
         			}
         			document.getElementById("progress_contain").style.display = "none";
-        		}, 3000);
+        		}, 0);
         	});
         } catch(err)
         {

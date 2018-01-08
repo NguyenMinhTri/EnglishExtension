@@ -21,13 +21,13 @@
       "all_frames": true
     }
   ],
-  "content_security_policy": "script-src 'self'; object-src 'self'; media-src https://www.oxfordlearnersdictionaries.com",
+  "content_security_policy": "script-src 'self'; object-src 'self'",
   "permissions": [
+	"tabs",
     "cookies",
     "<all_urls>",
     "notifications",
-    "storage",
-    "videoCapture"
+    "storage"
   ],
   "web_accessible_resources": [
     "Roboto.woff2"
