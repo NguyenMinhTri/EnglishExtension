@@ -91,7 +91,7 @@ function jsUcfirst(string) {
 
 function removeLastChar(string) {
     if (string != null) {
-        return string.substring(0, string.length);
+        return string.substring(0, string.length - 2);
     } else {
         return "";
     }
