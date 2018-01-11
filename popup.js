@@ -77,43 +77,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
         	document.getElementById("content_1").style.display = "none";
         	document.getElementById("progress_contain").style.display = "none";
         } else {
-            try{
-        	fetch("https://uitenglishbot.herokuapp.com/verifyToken", {
-        		credentials: 'include'
-        	})
-        	.then(function(response) {
-                try
-                {
-        		  return response.json();
-                }
-                catch(err){
-                    return null;
-                }
-        	})
-        	.then(function(data) {
-        		window.setInterval(function(){
-        			if (data.text === null || data.text== null) {
-        				document.getElementById("content").style.display = "flex";
-        				document.getElementById("content_1").style.display = "none";
-        			}
-        			else{
-        				if (document.getElementById("content_1").style.display == "none"){
-        					document.getElementById("play").click();
-        				}
-        				document.getElementById("header").classList.remove("small");
-        				document.getElementById("content").style.display = "none";
-        				document.getElementById("content_1").style.display = "block";
-        				document.getElementById("play").style.opacity = "1";
-        				document.getElementById("play").textContent = "Hi " + data.text ;
-        			}
-        			document.getElementById("progress_contain").style.display = "none";
-        		}, 0);
-        	});
-        } catch(err)
-        {
-                                    document.getElementById("content").style.display = "flex";
+            chrome.extension.sendRequest({ name: "verifyToken", audio: "" }, function(data) {
+                console.log(data);
+                window.setInterval(function(){
+                    if (data.text === null || data.text== null) {
+                        document.getElementById("content").style.display = "flex";
                         document.getElementById("content_1").style.display = "none";
-        }
+                    }
+                    else{
+                        if (document.getElementById("content_1").style.display == "none"){
+                            document.getElementById("play").click();
+                        }
+                        document.getElementById("header").classList.remove("small");
+                        document.getElementById("content").style.display = "none";
+                        document.getElementById("content_1").style.display = "block";
+                        document.getElementById("play").style.opacity = "1";
+                        document.getElementById("play").textContent = "Hi " + data.text ;
+                    }
+                    document.getElementById("progress_contain").style.display = "none";
+                }, 0);
+            });
         }
     });
 });
