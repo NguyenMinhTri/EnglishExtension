@@ -1,17 +1,33 @@
 
 //
+var soundSetting = false;
 chrome.cookies.set({
     url: 'https://uitenglishbot.herokuapp.com/',
     name: "duplicate",
     value: "temp"
 });
+chrome.cookies.get({
+    url: 'https://uitenglishbot.herokuapp.com/',
+    name: 'sound_setting'
+}, function (cookie) {
+    if (cookie === null || cookie == null) {
+        sendResponse("ON");
+    } else {
+        if (cookie.value === 'ON') {
+            soundSetting = true;
+        }
+        else {
+            soundSetting = false;
+        }
+    }
+});
+
 var tempTime = Date.now();
 var urlSound = "https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=vi&tk=775040.775040&q=";
 var urlSoundEn = "https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=en&tk=775040.775040&q=";
 function playVoca(url) {
     return new Promise(function (resolve, reject) { // return a promise
-        if(tempTime < ( Date.now() - 300))
-        {
+        if (tempTime < (Date.now() - 300)) {
             var audio = new Audio();                     // create audio wo/ src
             audio.preload = "auto";                      // intend to play through
             audio.autoplay = true;                       // autoplay when loaded
@@ -37,9 +53,18 @@ chrome.extension.onRequest.addListener(function (request, sender, sendResponse) 
         });
 
     } else if (request.name == "runAudio") {
-        playVoca(request.audio).then(function () {
-            sendResponse(Date.now());
-        });
+        if (soundSetting) {
+            playVoca(request.audio).then(function () {
+                sendResponse(Date.now());
+            });
+        }
+    }
+    else if (request.name == "runAudioWhenClick") {
+        {
+            playVoca(request.audio).then(function () {
+                sendResponse(Date.now());
+            });
+        }
     }
     else if (request.name == "runGoogleAudio") {
         playVoca(urlSoundEn + request.audio).then(function () {
@@ -53,7 +78,7 @@ chrome.extension.onRequest.addListener(function (request, sender, sendResponse) 
             }
             sendResponse(tempCookieValue);
         });
-    } else if(request.name == "determineDuplicate") {
+    } else if (request.name == "determineDuplicate") {
         chrome.cookies.get({
             url: 'https://uitenglishbot.herokuapp.com/',
             name: 'duplicate'
@@ -64,14 +89,14 @@ chrome.extension.onRequest.addListener(function (request, sender, sendResponse) 
                 sendResponse(cookie.value);
             }
         });
-    } else if(request.name == "setCookieDuplicate") {
+    } else if (request.name == "setCookieDuplicate") {
         chrome.cookies.set({
             url: 'https://uitenglishbot.herokuapp.com/',
             name: "duplicate",
             value: request.audio
         });
-    }  
-    
+    }
+
     else if (request.name == "getDictToExtension") {
 
         var url = "http://olympusenglish.azurewebsites.net/Dictionary/getDictToExtension?contain=" + request.audio;
@@ -133,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
         if (checkLoading == false) {
-           // new Audio(urlSound + "Hình như bạn chưa đăng nhập vào Olympus").play();
+            // new Audio(urlSound + "Hình như bạn chưa đăng nhập vào Olympus").play();
         } else {
             fetch("https://uitenglishbot.herokuapp.com/verifyToken", {
                 credentials: 'include'
@@ -185,12 +210,12 @@ $.connection.hub.start().
 
 notification.client.receiveMessage = function (msg) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, msg, function (response) { 
-         });
+        chrome.tabs.sendMessage(tabs[0].id, msg, function (response) {
+        });
     });
 };
 
 notification.client.updateUsersOnlineCount = function (count) {
     chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
-    chrome.browserAction.setBadgeText({text: count.toString()});
+    chrome.browserAction.setBadgeText({ text: count.toString() });
 };

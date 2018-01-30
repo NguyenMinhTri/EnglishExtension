@@ -61,7 +61,7 @@ function renderBubble(mouseX, mouseY, selection, voca, audio) {
 	var url = "https://uitenglishbot.herokuapp.com/saveword?voca=" + voca;
 	var saveword = "fetch(" + '"' + url + '"' + "," + "{credentials:'include',Cookie:" + '"' + allCookies + '"' + "}" + ").then(function(response) {return response.json();});"
 	//var voice = "new Audio('"+audio+"').play()";
-	var voice = "chrome.extension.sendRequest({ name: '" + "runAudio" + "', audio: '" + audio + "'}, function(response) {});";
+	var voice = "chrome.extension.sendRequest({ name: '" + "runAudioWhenClick" + "', audio: '" + audio + "'}, function(response) {});";
 	if (!bubble.classList.contains('hidden')) {
 
 		bubble.innerHTML = selection;
@@ -106,87 +106,87 @@ function removeLastChar(string) {
 
 //
 chrome.runtime.onMessage.addListener(function (data, sender, sendResponse) {
-		data = JSON.parse(data);
-		if (typeof data.strVoca !== "undefined") {
-			console.log(data);
-			chrome.extension.sendRequest({ name: "runAudio", audio: data.messages[3].attachment.payload.url }, function (response) {
+	data = JSON.parse(data);
+	if (typeof data.strVoca !== "undefined") {
+		console.log(data);
+		chrome.extension.sendRequest({ name: "runAudio", audio: data.messages[3].attachment.payload.url }, function (response) {
+			console.log(response);
+			chrome.extension.sendRequest({ name: "runGoogleAudio", audio: data.messages[2].text }, function (response) {
 				console.log(response);
-				chrome.extension.sendRequest({ name: "runGoogleAudio", audio: data.messages[2].text }, function (response) {
-					console.log(response);
-				});
 			});
-			iziToast.show({
-				title: data.strVoca,
-				message: data.messages[2].text
-			});
-		}
-		else if (typeof data.Id !== "undefined") {
-			chrome.extension.sendRequest({ name: "runAudio", audio: data.SoundUrl }, function (response) {
+		});
+		iziToast.show({
+			title: data.strVoca,
+			message: data.messages[2].text
+		});
+	}
+	else if (typeof data.Id !== "undefined") {
+		chrome.extension.sendRequest({ name: "runAudio", audio: data.SoundUrl }, function (response) {
+			console.log(response);
+			chrome.extension.sendRequest({ name: "runGoogleAudio", audio: data.MeanEn }, function (response) {
 				console.log(response);
-				chrome.extension.sendRequest({ name: "runGoogleAudio", audio: data.MeanEn }, function (response) {
-					console.log(response);
-				});
 			});
-			iziToast.show({
-				timeout: 10000,
-				close: false,
-				theme: 'dark',
-				icon: '',
-				title: data.VocaID + " " + data.Pron,
-				message: data.MeanVi + "<br/>" + data.MeanEn,
-				position: 'bottomRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
-				progressBarColor: 'rgb(0, 255, 184)',
-				buttons: [
-					['<button>Ok</button>', function (instance, toast) {
-						//openInNewTab(data.urlQuestion);
-					}, true], // true to focus
-					['<button>Close</button>', function (instance, toast) {
-						instance.hide({
-							transitionOut: 'fadeOutUp',
-							onClosing: function (instance, toast, closedBy) {
-								console.info('closedBy: ' + closedBy); // The return will be: 'closedBy: buttonName'
-							}
-						}, toast, 'buttonName');
-					}]
-				],
-				onOpening: function (instance, toast) {
-					console.info('callback abriu!');
-				},
-				onClosing: function (instance, toast, closedBy) {
-					console.info('closedBy: ' + closedBy); // tells if it was closed by 'drag' or 'button'
-				}
-			});
-		}else if (typeof data.text !== "undefined") {
-			iziToast.show({
-				timeout: 8000,
-				close: false,
-				theme: 'dark',
-				icon: '',
-				title: "Bạn có một câu hỏi: ",
-				message: data.text,
-				position: 'bottomLeft', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
-				progressBarColor: 'rgb(0, 255, 184)',
-				buttons: [
-					['<button>Ok</button>', function (instance, toast) {
-						openInNewTab(data.urlQuestion);
-					}, true], // true to focus
-					['<button>Close</button>', function (instance, toast) {
-						instance.hide({
-							transitionOut: 'fadeOutUp',
-							onClosing: function (instance, toast, closedBy) {
-								console.info('closedBy: ' + closedBy); // The return will be: 'closedBy: buttonName'
-							}
-						}, toast, 'buttonName');
-					}]
-				],
-				onOpening: function (instance, toast) {
-					console.info('callback abriu!');
-				},
-				onClosing: function (instance, toast, closedBy) {
-					console.info('closedBy: ' + closedBy); // tells if it was closed by 'drag' or 'button'
-				}
-			});
-		}
+		});
+		iziToast.show({
+			timeout: 10000,
+			close: false,
+			theme: 'dark',
+			icon: '',
+			title: data.VocaID + " " + data.Pron,
+			message: data.MeanVi + "<br/>" + data.MeanEn,
+			position: 'bottomRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+			progressBarColor: 'rgb(0, 255, 184)',
+			buttons: [
+				['<button>Ok</button>', function (instance, toast) {
+					//openInNewTab(data.urlQuestion);
+				}, true], // true to focus
+				['<button>Close</button>', function (instance, toast) {
+					instance.hide({
+						transitionOut: 'fadeOutUp',
+						onClosing: function (instance, toast, closedBy) {
+							console.info('closedBy: ' + closedBy); // The return will be: 'closedBy: buttonName'
+						}
+					}, toast, 'buttonName');
+				}]
+			],
+			onOpening: function (instance, toast) {
+				console.info('callback abriu!');
+			},
+			onClosing: function (instance, toast, closedBy) {
+				console.info('closedBy: ' + closedBy); // tells if it was closed by 'drag' or 'button'
+			}
+		});
+	} else if (typeof data.text !== "undefined") {
+		iziToast.show({
+			timeout: 8000,
+			close: false,
+			theme: 'dark',
+			icon: '',
+			title: data.title,
+			message: data.text,
+			position: 'bottomLeft', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+			progressBarColor: 'rgb(0, 255, 184)',
+			buttons: [
+				['<button>Ok</button>', function (instance, toast) {
+					openInNewTab(data.urlQuestion);
+				}, true], // true to focus
+				['<button>Close</button>', function (instance, toast) {
+					instance.hide({
+						transitionOut: 'fadeOutUp',
+						onClosing: function (instance, toast, closedBy) {
+							console.info('closedBy: ' + closedBy); // The return will be: 'closedBy: buttonName'
+						}
+					}, toast, 'buttonName');
+				}]
+			],
+			onOpening: function (instance, toast) {
+				console.info('callback abriu!');
+			},
+			onClosing: function (instance, toast, closedBy) {
+				console.info('closedBy: ' + closedBy); // tells if it was closed by 'drag' or 'button'
+			}
+		});
+	}
 	sendResponse("ok");
 	return true;
 });
@@ -194,4 +194,4 @@ chrome.runtime.onMessage.addListener(function (data, sender, sendResponse) {
 function openInNewTab(url) {
 	var win = window.open(url, '_blank');
 	win.focus();
-  }
+}
