@@ -71,7 +71,7 @@ chrome.extension.onRequest.addListener(function (request, sender, sendResponse) 
             sendResponse(Date.now());
         });
     } else if (request.name == "getAllCookies") {
-        chrome.cookies.getAll({ url: "http://olympusenglish.azurewebsites.net" }, function (cookies) {
+        chrome.cookies.getAll({ url: "http://uitenglish.azurewebsites.net" }, function (cookies) {
             var tempCookieValue = '';
             for (var i = 0; i < cookies.length; i++) {
                 tempCookieValue += cookies[i].name + '=' + cookies[i].value + '; ';
@@ -99,7 +99,7 @@ chrome.extension.onRequest.addListener(function (request, sender, sendResponse) 
 
     else if (request.name == "getDictToExtension") {
 
-        var url = "http://olympusenglish.azurewebsites.net/Dictionary/getDictToExtension?contain=" + request.audio;
+        var url = "http://uitenglish.azurewebsites.net/Dictionary/getDictToExtension?contain=" + request.audio;
         fetch(url, {
             credentials: 'include'
         })
@@ -115,7 +115,7 @@ chrome.extension.onRequest.addListener(function (request, sender, sendResponse) 
             });
 
     } else if (request.name == "verifyToken") {
-        var url = "http://olympusenglish.azurewebsites.net/Dictionary/verifyToken";
+        var url = "http://uitenglish.azurewebsites.net/Dictionary/verifyToken";
         fetch(url, {
             credentials: 'include'
         })
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // chrome.tabs.onUpdated.addListener(checkForValidUrl);
     //  new Audio("https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=vi&tk=775040.775040&q=Tr%E1%BB%9Di%20m%C3%A1").play();
     //chrome.pageAction.onClicked.addListener(onClickListener); //might need to put this here, it's been a while since I've done a chrome extension, but if you do then just put your conditional for the regex in your onClickListener function
-    chrome.cookies.getAll({ url: "http://olympusenglish.azurewebsites.net" }, function (cookies) {
+    chrome.cookies.getAll({ url: "http://uitenglish.azurewebsites.net" }, function (cookies) {
         var tempCookieValue = '';
         var checkLoading = false;
         chrome.cookies.set({
@@ -200,7 +200,7 @@ function onClickListener(tab) {
 
 
 
-$.connection.hub.url = "http://olympusenglish.azurewebsites.net/signalR";
+$.connection.hub.url = "http://uitenglish.azurewebsites.net/signalR";
 //$.connection.hub.url = "http://localhost:20000/signalR";
 var notification = $.connection.notificationHub;
 

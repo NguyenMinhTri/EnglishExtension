@@ -7,7 +7,7 @@
 //});
 
 document.addEventListener("DOMContentLoaded", function(event) {
-	chrome.cookies.getAll({ url: "http://olympusenglish.azurewebsites.net" }, function(cookies) {
+	chrome.cookies.getAll({ url: "http://uitenglish.azurewebsites.net" }, function(cookies) {
 		var tempCookieValue = '';
         var checkLoading = false;
 		chrome.cookies.set({
